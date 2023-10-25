@@ -1,0 +1,97 @@
+step 1
+sudo apt update
+sudo apt install openjdk-11-jre
+
+step 2
+java -version
+
+step 3
+curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update
+sudo apt-get install jenkins
+
+Step4
+allow security group 8080 port access in inbound rule
+
+step 5
+localhost:8080 or EC2 publicid:80
+
+step 6
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+step 7
+sudo apt update
+sudo apt install docker.io
+
+step 8
+sudo usermod -aG docker ubuntu
+logout and logini
+
+step 9
+sudo usermod -aG docker jenkins
+logout and login
+docker run hello-world and check
+
+step 10
+new item and pipeline -- to definition pipeline from scm
+
+select git paste the url - creditials and give the path
+
+
+check docker pipeline - plugins
+
+step 11
+install sonarqube scanner - plugin
+
+install sonarqube in ec2 or local where you run jenkins 
+sudo su-
+adduser sonarqube
+sonar password 
+
+*sonarqube scanner {pwd - admins}
+
+configure sonarqube in ec2
+apt install unzip
+adduser sonarqube
+sudo su - sonarqube
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.4.0.54424.zip
+unzip *
+chmod -R 755 /home/sonarqube/sonarqube-9.4.0.54424
+chown -R sonarqube:sonarqube /home/sonarqube/sonarqube-9.4.0.54424
+cd sonarqube-9.4.0.54424/bin/linux-x86-64/
+./sonar.sh start
+
+sonarcube default port 9000
+
+login to publicid:9000
+admin
+admin
+change the password
+login - my account - security - generate tokens - copy code to jenkins
+
+dashboard - manage jenkins - manage credentials or credentials - system - global credentials (unrestricted) 
+- add credentials - kind - secrete text - save code and give name
+
+docker
+dashboard - manage jenkins - manage credentials or credentials - system - global credentials (unrestricted) 
+- add credentials - kind - secrete text - save code and give name
+
+docker credentials -same steps -add credentials - username password - dockercred [we gave this name in our jenkins file]
+github credentials -same steps - choose secret text- go to github -settigs -developer settigs - token classic - 2nd one -select all - generate -copy the token to jenkins 
+
+docker install and give permission to ubuntu and jenkins 
+
+install minikube cluster ref https://www.linuxtechi.com/how-to-install-minikube-on-ubuntu/
+
+in CD process we need a gitops tool ARGOCD 
+
+go to operatorhub.io search for ARGO cd - install -follow the steps
+kubectl create namespace argocd
+kubectl apply -n muthu -f argocd.yaml
+
+
+

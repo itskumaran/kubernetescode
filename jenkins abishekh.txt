@@ -1,0 +1,152 @@
+launch ec2
+insatll java latest or req version
+install jenkins using digital ocean or veeramalla git repo
+install docker using digital ocean or veeramalla git repo
+
+usermod -aG docker jenkins [it to give the jenkins user access to docker]
+usermod -aG docker ubuntu [it to give the jenkins user access to docker]
+systemctl restart docker
+su - jenkins
+now check with this doc command
+docker run hello-world
+now access jenkins
+it port didnt work check security group inbound rules and add 8080 port
+and restart the jenkins after installing docker plugins [we used docker plugins in our project]
+manage plugings - docker pipeline plugin install
+new job -pipeline 
+
+->service jenkins start
+->ps -ef | grep jenkins [to find jenkins port]
+
+jenkins projects.
+
+Question 1:
+How does jenkins get notified if there is a commit in GIT?
+
+
+what are the advantage in using docker as an agent ?
+The purpose of using docker agent is you can lessen the confirguration and the additonal benefits that you will get 
+in this docker container in which your Jenkins job so all of these stages inside your jenkins file there are multiple stages and these stages can
+keep increasing depending upon your complexities of your source code and if you run all fo these things ina virutal machine 
+instead of docker container what you have done is similar to EC2 instances here you have created one more Ec2 instance
+and you have configured it as slave and you have created one more Ec2 instance for project and you will keep on adding EC2 instances
+ and the downside of it is one fine day there is no load and no body is making changes to the devlopment to the source code but 
+this EC2 keeps running and you can stop and you cannot use autoscaler, but still you have minimal configuration and the downside
+of this and still mnay EC2 instance will be running in AWS and you are charged for this instance.
+You have to do lot of configuration on all those machines.  Instead we use a docker container you can just write once and whenever the
+container gets created and configuration will be created and the container will be deleted right after the execution is completed
+
+Your pipeline takes resposiblity of creting a container and configurtions and will execute all the stages inside the coker container 
+and once all the stages are done, docker container is deleted.  It has lot of rooms for other jobs to run parellely.
+
+ARGO CD:
+The Argo CD Operator manages the full lifecycle for Argo CD and it's components.
+The operator's goal is to automate the tasks required when operating an Argo CD cluster
+
+when ever we deal with kube controller we need to go through kubernetes operators .which will manage the lifecycle of the kubernetes controller
+operators makes the installation of controller easy .site operatorhub.io
+
+
+**************************************************************************************************************
+cicd jenkins agrocd project explaination
+-CI process
+
+->we have a git repository where we have our app source code for ex a java app
+
+->when a developer rise a pull req we hav config web hooks using webhooks we trigger jenkins pipelines .
+
+->So we have used declarative jenkins pipelines because its easy to wrirte and collabarate.so as part of declarative pipelines 
+
+->We run multiple stages some of the stages are the first stage would be the build stage using maven as our build tool we build the application
+
+->Once the app is build successfully where we also excute some unit test and we also excute some statsic code analysis using sonarcube
+
+->Using this static code analysis we verify that the app not exposed to any static code
+
+->After that we also have so,e sast and dast tool where we verify application security if the new change that the devloper writing introduce any security vulnarabilty.
+
+->If any of these things fails we would send email notification or slack notification that we have config 
+
+->If all the stages are succcessfully done we would go frwd and create a docker image.
+
+->We are running simple shell target to create docker image out of the dockerfile which we have stored in the git repo.
+
+->As soon doc image is created again using the shell cmd we push the docker images to the container registry.[ecr,qua.io,docker_hub]
+
+-CD process
+
+->once the docker image is pushed to the elastic container reg [ECR]
+
+->we have a kube cluster inside that we have two cd tools one is  [agro image updater, and, agro cd]
+
+->both of these things are kube controller that we have deployed on our kube cluster .
+
+->what they do is the first tool the image updater and shell script instead would contiously monitor image reg as soon the new image is creteated
+
+->it will pick the new image and it will update the new image in another git repo we have . and this repo is for image manifesto. thats our helmchart ,pod yml,deploy.yml
+
+->as soon as the git repo is updated with this new image then the other kube cotroller we have that is agro cd .it takes the new image and it deploy on the kube cluster 
+
+
+***************************************************
+needed plugins
+
+*Docker pipeline
+*sonarqube scanner {pwd - admins}
+
+configure sonarqube in ec2
+apt install unzip
+adduser sonarqube
+sudo su - sonarqube
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.4.0.54424.zip
+unzip *
+chmod -R 755 /home/sonarqube/sonarqube-9.4.0.54424
+chown -R sonarqube:sonarqube /home/sonarqube/sonarqube-9.4.0.54424
+cd sonarqube-9.4.0.54424/bin/linux-x86-64/
+./sonar.sh start
+
+sonarcube default port 9000
+
+sign with public ip to the port
+login - my account - security - generate tokens - copy code to jenkins
+
+dashboard - manage jenkins - manage credentials or credentials - system - global credentials (unrestricted) 
+- add credentials - kind - secrete text - save code and give name
+
+docker credentials -same steps -add credentials - username password - dockercred [we gave this name in our jenkins file]
+github credentials -same steps - choose secret text- go to github -settigs -developer settigs - token classic - 2nd one -select all - generate -copy the token to jenkins 
+
+docker install and give permission to ubuntu and jenkins 
+
+install minikube cluster ref https://www.linuxtechi.com/how-to-install-minikube-on-ubuntu/
+
+in CD process we need a gitops tool ARGOCD 
+
+go to operatorhub.io search for ARGO cd - install -follow the steps
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
